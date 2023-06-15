@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task hello {
+    doLast{
+        println 'Hello!'
+    }
+}
+
+task world {
+    doLast {
+        println ' world!'
+    }
+}
+
+world.dependsOn hello
+
+task buildJar(type: Jar) {
+    baseName = 'zadanie-9'
+    version = '1.0'
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'zadanie9'
+    }
+}
+
+task buildDocker(type: Exec) {
+    commandLine 'docker', 'build', '-t', 'zadanie-9', 'C:\\Users\\User\\IdeaProjects\\shablon91\\build\\libs'
+}
+
+task runDocker(type: Exec) {
+    commandLine 'docker', 'run', '-d', 'zadanie-9'
+}
+
+task buildAndRunDocker(dependsOn: [buildJar, buildDocker, runDocker])
